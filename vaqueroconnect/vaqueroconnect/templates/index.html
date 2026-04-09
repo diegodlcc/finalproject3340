@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!--Introduction-->
+<h1>Welcome To Vaquero Connect!</h1>
+<h1>This is the Homepage</h1>
+
+<!--Post a "tweet" here-->
+<div class="main-content">
+  <form method="POST" action="">
+      {% csrf_token %}
+      <div class="top-section">
+          <img src="{% static 'images/Empty-PFP.jpg' %}" alt="PFP">
+          <textarea name="tweet_content" id="tweetInput" placeholder="What's happening?"></textarea>
+      </div>
+      <div class="bottom-section">
+          <label id="charLabel">160 characters remaining</label>
+          <button type="submit" id="tweetButton">Tweet</button>
+      </div>
+  </form>
+  <hr class="tweet-area-divider">
+</div> 
+
+<!--Timeline-->
+
+{% endblock %}
