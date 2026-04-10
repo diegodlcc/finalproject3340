@@ -125,3 +125,5 @@ LOGIN_REDIRECT_URL = 'home'
 
 # The URL nickname to redirect to after a user logs out
 LOGOUT_REDIRECT_URL = 'login'
+
+LOGIN_URL = '/login/'

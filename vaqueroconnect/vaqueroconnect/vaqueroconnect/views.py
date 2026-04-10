@@ -1,8 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.decorators import login_required
 
 # This is the Homepage
+@login_required
+def account(request):
+    # Look in templates for account.html
+    return render(request, 'account.html') 
+
 def home(request):
     # Look in templates folder for index.html (Homepage)
     return render(request, 'index.html')
