@@ -35,3 +35,7 @@ def signup(request):
         form = UserCreationForm()
         
     return render(request, 'signup.html', {'form': form})
+
+#This is the academics page
+def academics_page(request):
+    return render(request, 'academics.html')
