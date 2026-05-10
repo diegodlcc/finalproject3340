@@ -3,26 +3,288 @@
 
 {% block content %}
 
-<!--Introduction-->
-<h1>Welcome To Vaquero Connect!</h1>
-<h1>This is the Homepage</h1>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-<!--Post a "tweet" here-->
-<div class="main-content">
-  <form method="POST" action="">
-      {% csrf_token %}
-      <div class="top-section">
-          <img src="{% static 'images/Empty-PFP.jpg' %}" alt="PFP">
-          <textarea name="tweet_content" id="tweetInput" placeholder="What's happening?"></textarea>
-      </div>
-      <div class="bottom-section">
-          <label id="charLabel">160 characters remaining</label>
-          <button type="submit" id="tweetButton">Tweet</button>
-      </div>
-  </form>
-  <hr class="tweet-area-divider">
-</div> 
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
 
-<!--Timeline-->
+  .home-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem 1rem;
+  }
+
+  .home-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Page Header */
+  .home-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .home-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    color: var(--utrgv-orange);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .home-header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0;
+    font-weight: 300;
+  }
+
+  /* Post Card */
+  .post-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-card-header {
+    background: var(--utrgv-orange);
+    padding: 0.85rem 1.5rem;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .post-card-header span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    color: #fff;
+  }
+
+  .post-card-body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .post-input-row {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .post-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+
+  .post-textarea {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+    background: #fafafa;
+    resize: none;
+    height: 90px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .post-textarea:focus {
+    border-color: var(--utrgv-orange);
+    box-shadow: 0 0 0 3px rgba(237,125,49,0.12);
+    background: #fff;
+  }
+
+  .post-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.85rem;
+  }
+
+  .char-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .char-count.warning {
+    color: #e67e22;
+  }
+
+  .char-count.danger {
+    color: #c0392b;
+  }
+
+  .btn-post {
+    padding: 0.5rem 1.5rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-post:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-post:active {
+    transform: translateY(0);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  /* Timeline placeholder */
+  .timeline-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .timeline-empty span {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-empty p {
+    font-size: 0.9rem;
+  }
+</style>
+
+<div class="home-wrapper">
+  <div class="home-inner">
+
+    <!-- Page Header -->
+    <div class="home-header">
+      <h1>Vaquero Connect</h1>
+      <p>See what's happening on campus</p>
+    </div>
+
+    <!-- Post Card -->
+    <div class="post-card">
+      <div class="post-card-header">
+        <span>What's on your mind?</span>
+      </div>
+      <div class="post-card-body">
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div class="post-input-row">
+            <img src="{% static 'images/Empty-PFP.jpg' %}" alt="Profile Picture" class="post-avatar">
+            <textarea
+              name="tweet_content"
+              id="tweetInput"
+              class="post-textarea"
+              placeholder="What's happening on campus?"
+              maxlength="160"
+            ></textarea>
+          </div>
+          <div class="post-footer">
+            <span class="char-count" id="charLabel">160 characters remaining</span>
+            <button type="submit" class="btn-post" id="tweetButton">Post</button>
+          </div>
+        </form>
+
+        <div class="divider"></div>
+
+        <!-- Timeline -->
+        {% if posts %}
+          {% for post in posts %}
+            <div style="background:#fff; border-radius:10px; padding:1rem 1.25rem; margin-bottom:0.85rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+
+              <!-- Post Header -->
+              <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem;">
+                <img src="{% static 'images/Empty-PFP.jpg' %}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                <span style="font-weight:600; font-size:0.9rem; color:#1a1a1a;">{{ post.author.username }}</span>
+                <span style="font-size:0.75rem; color:#999; margin-left:auto;">{{ post.created_at|timesince }} ago</span>
+              </div>
+
+              <!-- Post Content (view mode) -->
+              <p id="content-{{ post.id }}" style="margin:0 0 0.5rem; font-size:0.92rem; color:#333;">{{ post.content }}</p>
+
+              {% if user == post.author %}
+                <!-- Edit Form (hidden by default) -->
+                <form id="edit-form-{{ post.id }}" method="POST" action="{% url 'edit_post' post.id %}" style="display:none; margin-bottom:0.5rem;">
+                  {% csrf_token %}
+                  <textarea name="content" maxlength="160" style="width:100%; border:1.5px solid #e8e0d8; border-radius:8px; padding:0.5rem 0.75rem; font-family:'DM Sans',sans-serif; font-size:0.92rem; resize:none; outline:none;">{{ post.content }}</textarea>
+                  <div style="display:flex; gap:0.5rem; margin-top:0.4rem; justify-content:flex-end;">
+                    <button type="submit" style="padding:0.35rem 1rem; background:#ed7d31; color:#fff; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer;">Save</button>
+                    <button type="button" onclick="toggleEdit('{{ post.id }}')" style="padding:0.35rem 1rem; background:#eee; color:#555; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer;">Cancel</button>
+                  </div>
+                </form>
+
+                <!-- Edit & Delete Buttons -->
+                <div style="display:flex; gap:0.5rem;">
+                  <button onclick="toggleEdit('{{ post.id }}')" style="padding:0.25rem 0.75rem; background:#fef0e6; color:#ed7d31; border:1px solid #ed7d31; border-radius:6px; font-size:0.75rem; cursor:pointer;">Edit</button>
+                  <form method="POST" action="{% url 'delete_post' post.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Delete this post?')" style="padding:0.25rem 0.75rem; background:#fdecea; color:#c0392b; border:1px solid #c0392b; border-radius:6px; font-size:0.75rem; cursor:pointer;">Delete</button>
+                  </form>
+                </div>
+              {% endif %}
+
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="timeline-empty">
+            <span>📋</span>
+            <p>No posts yet — be the first to share something!</p>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const textarea = document.getElementById('tweetInput');
+  const charLabel = document.getElementById('charLabel');
+  const maxChars = 160;
+
+  textarea.addEventListener('input', () => {
+    const remaining = maxChars - textarea.value.length;
+    charLabel.textContent = `${remaining} characters remaining`;
+    charLabel.className = 'char-count';
+    if (remaining <= 20) charLabel.classList.add('warning');
+    if (remaining <= 0) charLabel.classList.add('danger');
+  });
+
+  function toggleEdit(postId) {
+    const content = document.getElementById('content-' + postId);
+    const form = document.getElementById('edit-form-' + postId);
+    const isHidden = form.style.display === 'none';
+    form.style.display = isHidden ? 'block' : 'none';
+    content.style.display = isHidden ? 'none' : 'block';
+  }
+</script>
 
 {% endblock %}

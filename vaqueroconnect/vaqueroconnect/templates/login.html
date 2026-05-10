@@ -2,34 +2,217 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            
-            <div class="card shadow">
-                <div class="card-body p-4">
-                    <h3 class="text-center mb-4" style="color: #ed7d31;">Login to Vaquero Connect</h3>
-                    
-                    <form method="POST">
-                        {% csrf_token %} <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" id="username" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="password" required>
-                        </div>
-                        
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary" style="background-color: #1DA1F2; border: none;">Login</button>
-                        </div>
-                    </form>
-                    
-                </div>
-            </div>
 
-        </div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
+
+  .signup-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .signup-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    width: 100%;
+    max-width: 460px;
+    overflow: hidden;
+  }
+
+  .signup-header {
+    background: var(--utrgv-orange);
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .signup-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: #fff;
+    letter-spacing: 2px;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .signup-header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+    font-weight: 300;
+  }
+
+  .signup-body {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .field-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .field-group input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .field-group input:focus {
+    border-color: var(--utrgv-orange);
+    box-shadow: 0 0 0 3px rgba(237,125,49,0.12);
+    background: #fff;
+  }
+
+  .btn-create {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-create:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-create:active {
+    transform: translateY(0);
+  }
+
+  .signup-link {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .signup-link a {
+    color: var(--utrgv-orange);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .signup-link a:hover {
+    text-decoration: underline;
+  }
+
+  .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.3rem 0 0;
+  }
+
+  .errorlist li {
+    font-size: 0.78rem;
+    color: #c0392b;
+    font-weight: 500;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+</style>
+
+<div class="signup-wrapper">
+  <div class="signup-card">
+
+    <div class="signup-header">
+      <h1>Login to Vaquero Connect</h1>
+      <p>Welcome back, Vaquero!</p>
     </div>
+
+    <div class="signup-body">
+      <form method="POST">
+        {% csrf_token %}
+
+        <!-- Display non-field errors (e.g. wrong username/password) -->
+        {% if form.non_field_errors %}
+          <ul class="errorlist" style="margin-bottom: 1rem;">
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        <!-- Username -->
+        <div class="field-group">
+          <label for="id_username">Username</label>
+          <input type="text" name="username" id="id_username" required>
+          {% if form.username.errors %}
+            <ul class="errorlist">
+              {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="id_password">Password</label>
+          <input type="password" name="password" id="id_password" required>
+          {% if form.password.errors %}
+            <ul class="errorlist">
+              {% for error in form.password.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn-create">Login</button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}
