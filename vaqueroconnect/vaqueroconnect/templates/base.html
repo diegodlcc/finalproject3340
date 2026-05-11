@@ -26,11 +26,13 @@
                         Events
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Academics</a></li>
-                        <li><a class="dropdown-item" href="#">Sports</a></li>
-                        <li><a class="dropdown-item" href="#">Social</a></li>
+                        <li><a class="dropdown-item" href="{% url 'event_list' %}">All Events</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Emergency Support</a></li>
+                        <li><a class="dropdown-item" href="{% url 'event_list' %}?category=academic">Academics</a></li>
+                        <li><a class="dropdown-item" href="{% url 'event_list' %}?category=sports">Sports</a></li>
+                        <li><a class="dropdown-item" href="{% url 'event_list' %}?category=social">Social</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'event_list' %}?category=emergency">Emergency Support</a></li>
                     </ul>
                 </li>
                 

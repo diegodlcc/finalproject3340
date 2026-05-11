@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
+
+  .detail-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem 1rem;
+  }
+
+  .detail-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .back-link:hover { color: var(--utrgv-orange); }
+
+  .detail-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .detail-header {
+    background: var(--utrgv-orange);
+    padding: 1.75rem 2rem;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .detail-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: #fff;
+    margin: 0 0 0.3rem;
+    line-height: 1.1;
+  }
+
+  .detail-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+
+  .detail-body {
+    padding: 1.75rem 2rem;
+  }
+
+  .detail-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .meta-item {
+    background: #f7f3ef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .meta-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .meta-value {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .detail-description {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  .spots-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .spots-bar {
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .spots-bar-fill {
+    height: 100%;
+    background: var(--utrgv-orange);
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .btn-rsvp {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-rsvp:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-cancel {
+    width: 100%;
+    padding: 0.85rem;
+    background: #fdecea;
+    color: #c0392b;
+    border: 1.5px solid #c0392b;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-cancel:hover { background: #fbd4d1; }
+
+  .rsvpd-badge {
+    text-align: center;
+    padding: 0.6rem;
+    background: #eafaf1;
+    border-radius: 8px;
+    color: #2ecc71;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .officer-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .btn-edit {
+    flex: 1;
+    padding: 0.6rem;
+    background: var(--utrgv-orange-light);
+    color: var(--utrgv-orange);
+    border: 1.5px solid var(--utrgv-orange);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .btn-delete {
+    flex: 1;
+    padding: 0.6rem;
+    background: #fdecea;
+    color: #c0392b;
+    border: 1.5px solid #c0392b;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+
+<div class="detail-wrapper">
+  <div class="detail-inner">
+
+    <a href="{% url 'event_list' %}" class="back-link">← Back to Events</a>
+
+    <div class="detail-card">
+      <div class="detail-header">
+        <h1>{{ event.title }}</h1>
+        <span class="detail-badge">{{ event.get_category_display }}</span>
+      </div>
+
+      <div class="detail-body">
+
+        <!-- Meta Info -->
+        <div class="detail-meta">
+          <div class="meta-item">
+            <div class="meta-label">Date</div>
+            <div class="meta-value">📅 {{ event.date }}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Time</div>
+            <div class="meta-value">🕐 {{ event.time }}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Location</div>
+            <div class="meta-value">📍 {{ event.location }}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Hosted by</div>
+            <div class="meta-value">👤 {{ event.created_by.username }}</div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="detail-description">{{ event.description }}</div>
+
+        <div class="divider"></div>
+
+        <!-- Capacity Bar -->
+        {% with spots=event.spots_left total=event.capacity %}
+          <div class="spots-bar-label">
+            <span>{{ spots }} of {{ total }} spots remaining</span>
+            <span>{{ event.rsvps.count }} going</span>
+          </div>
+          <div class="spots-bar">
+            <div class="spots-bar-fill" style="width: {% widthratio event.rsvps.count total 100 %}%"></div>
+          </div>
+        {% endwith %}
+
+        <!-- RSVP Section -->
+        {% if user.is_authenticated %}
+          {% if user_rsvpd %}
+            <div class="rsvpd-badge">✓ You're going to this event!</div>
+            <form method="POST" action="{% url 'event_unrsvp' event.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-cancel">Cancel RSVP</button>
+            </form>
+          {% elif event.spots_left > 0 %}
+            <form method="POST" action="{% url 'event_rsvp' event.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-rsvp">RSVP to this Event</button>
+            </form>
+          {% else %}
+            <button class="btn-rsvp" disabled style="opacity:0.5; cursor:not-allowed;">Event is Full</button>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-rsvp" style="display:block; text-align:center; text-decoration:none;">Login to RSVP</a>
+        {% endif %}
+
+        <!-- Edit/Delete for event creator -->
+        {% if user == event.created_by %}
+          <div class="officer-actions">
+            <a href="{% url 'event_edit' event.id %}" class="btn-edit">Edit Event</a>
+            <form method="POST" action="{% url 'event_delete' event.id %}" style="flex:1;">
+              {% csrf_token %}
+              <button type="submit" class="btn-delete" onclick="return confirm('Delete this event?')" style="width:100%;">Delete Event</button>
+            </form>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
