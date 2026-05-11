@@ -1,5 +1,5 @@
 """
-URL configuration for attempt project.
+URL configuration for vaqueroconnect project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/6.0/topics/http/urls/
@@ -15,8 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from . import views 
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", views.home, name='home'),
+    path("login/", auth_views.LoginView.as_view(template_name='login.html'), name="login"),
+    path("account/", views.account, name="account"),
+    path("signup/", views.signup, name="signup"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("post/<int:post_id>/delete/", views.delete_post, name="delete_post"),  
+    path("post/<int:post_id>/edit/", views.edit_post, name="edit_post"), 
+    path("events/", include('events.urls')),       
 ]

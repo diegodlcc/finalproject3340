@@ -1,5 +1,5 @@
 """
-ASGI config for attempt project.
+ASGI config for vaqueroconnect project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'attempt.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vaqueroconnect.settings')
 
 application = get_asgi_application()

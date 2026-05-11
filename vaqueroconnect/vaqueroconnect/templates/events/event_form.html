@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
+
+  .form-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem 1rem;
+  }
+
+  .form-inner {
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .back-link:hover { color: var(--utrgv-orange); }
+
+  .form-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .form-header {
+    background: var(--utrgv-orange);
+    padding: 1.75rem 2rem;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .form-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: #fff;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .form-header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0;
+    font-weight: 300;
+  }
+
+  .form-body {
+    padding: 1.75rem 2rem 2rem;
+  }
+
+  .field-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .field-group input,
+  .field-group textarea,
+  .field-group select {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .field-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .field-group input:focus,
+  .field-group textarea:focus,
+  .field-group select:focus {
+    border-color: var(--utrgv-orange);
+    box-shadow: 0 0 0 3px rgba(237,125,49,0.12);
+    background: #fff;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-submit:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+</style>
+
+<div class="form-wrapper">
+  <div class="form-inner">
+
+    <a href="{% url 'event_list' %}" class="back-link">← Back to Events</a>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h1>{{ action }} Event</h1>
+        <p>{% if action == 'Create' %}Post a new campus event{% else %}Update event details{% endif %}</p>
+      </div>
+
+      <div class="form-body">
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="field-group">
+            <label for="title">Event Title</label>
+            <input type="text" name="title" id="title" required value="{{ event.title|default:'' }}">
+          </div>
+
+          <div class="field-group">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" required>{{ event.description|default:'' }}</textarea>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="date">Date</label>
+              <input type="date" name="date" id="date" required value="{{ event.date|default:'' }}">
+            </div>
+            <div class="field-group">
+              <label for="time">Time</label>
+              <input type="time" name="time" id="time" required value="{{ event.time|default:'' }}">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="location">Location</label>
+            <input type="text" name="location" id="location" required value="{{ event.location|default:'' }}">
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="category">Category</label>
+              <select name="category" id="category" required>
+                <option value="">Select a category</option>
+                <option value="academic" {% if event.category == 'academic' %}selected{% endif %}>Academic</option>
+                <option value="sports" {% if event.category == 'sports' %}selected{% endif %}>Sports</option>
+                <option value="social" {% if event.category == 'social' %}selected{% endif %}>Social</option>
+                <option value="emergency" {% if event.category == 'emergency' %}selected{% endif %}>Emergency Support</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="capacity">Capacity</label>
+              <input type="number" name="capacity" id="capacity" min="1" required value="{{ event.capacity|default:'50' }}">
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <button type="submit" class="btn-submit">{{ action }} Event</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

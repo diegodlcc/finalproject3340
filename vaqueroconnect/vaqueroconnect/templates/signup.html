@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
+
+  .signup-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .signup-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    width: 100%;
+    max-width: 460px;
+    overflow: hidden;
+  }
+
+  .signup-header {
+    background: var(--utrgv-orange);
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    border-radius: 16px 16px 0 0;
+  }
+
+
+
+  .signup-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: #fff;
+    letter-spacing: 2px;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .signup-header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+    font-weight: 300;
+  }
+
+  .signup-body {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .field-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .field-group input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .field-group input:focus {
+    border-color: var(--utrgv-orange);
+    box-shadow: 0 0 0 3px rgba(237,125,49,0.12);
+    background: #fff;
+  }
+
+  .hint-text {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+
+  .password-rules {
+    background: var(--utrgv-orange-light);
+    border-left: 3px solid var(--utrgv-orange);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    margin: -0.5rem 0 1.25rem;
+  }
+
+  .password-rules p {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--utrgv-orange-dark);
+    margin: 0 0 0.4rem;
+  }
+
+  .password-rules ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+
+  .password-rules ul li {
+    font-size: 0.78rem;
+    color: #6b4a2a;
+    line-height: 1.6;
+  }
+
+  .btn-create {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-create:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-create:active {
+    transform: translateY(0);
+  }
+
+  .login-link {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .login-link a {
+    color: var(--utrgv-orange);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .login-link a:hover {
+    text-decoration: underline;
+  }
+
+  .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.3rem 0 0;
+  }
+
+  .errorlist li {
+    font-size: 0.78rem;
+    color: #c0392b;
+    font-weight: 500;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+</style>
+
+<div class="signup-wrapper">
+  <div class="signup-card">
+
+    <div class="signup-header">
+      <h1>Join Vaquero Connect</h1>
+      <p>Create your UTRGV community account</p>
+    </div>
+
+    <div class="signup-body">
+      <form method="POST">
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div class="field-group">
+          <label for="id_username">Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <ul class="errorlist">
+              {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="hint-text">150 characters or fewer. Letters, digits and @/./+/-/_ only.</p>
+          {% endif %}
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="id_password1">Password</label>
+          {{ form.password1 }}
+          {% if form.password1.errors %}
+            <ul class="errorlist">
+              {% for error in form.password1.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <!-- Password Rules -->
+        <div class="password-rules">
+          <p>Password requirements</p>
+          <ul>
+            <li>Can't be too similar to your personal info</li>
+            <li>Must be at least 8 characters</li>
+            <li>Can't be a commonly used password</li>
+            <li>Can't be entirely numeric</li>
+          </ul>
+        </div>
+
+        <!-- Password Confirmation -->
+        <div class="field-group">
+          <label for="id_password2">Confirm Password</label>
+          {{ form.password2 }}
+          {% if form.password2.errors %}
+            <ul class="errorlist">
+              {% for error in form.password2.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="hint-text">Enter the same password as before, for verification.</p>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn-create">Create Account</button>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a href="{% url 'login' %}">Login here</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
