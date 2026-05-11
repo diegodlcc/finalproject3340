@@ -88,6 +88,20 @@
     object-fit: cover;
     flex-shrink: 0;
     border: 2px solid var(--border);
+    background: #ddd;
+  }
+
+  .post-avatar-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--utrgv-orange-light);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
   }
 
   .post-textarea {
@@ -125,13 +139,8 @@
     font-weight: 500;
   }
 
-  .char-count.warning {
-    color: #e67e22;
-  }
-
-  .char-count.danger {
-    color: #c0392b;
-  }
+  .char-count.warning { color: #e67e22; }
+  .char-count.danger  { color: #c0392b; }
 
   .btn-post {
     padding: 0.5rem 1.5rem;
@@ -146,14 +155,8 @@
     transition: background 0.2s, transform 0.1s;
   }
 
-  .btn-post:hover {
-    background: var(--utrgv-orange-dark);
-    transform: translateY(-1px);
-  }
-
-  .btn-post:active {
-    transform: translateY(0);
-  }
+  .btn-post:hover { background: var(--utrgv-orange-dark); transform: translateY(-1px); }
+  .btn-post:active { transform: translateY(0); }
 
   .divider {
     height: 1px;
@@ -161,7 +164,44 @@
     margin: 0.5rem 0 1.25rem;
   }
 
-  /* Timeline placeholder */
+  /* Timeline */
+  .timeline-post {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .timeline-post-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--border);
+    background: #ddd;
+  }
+
+  .timeline-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--utrgv-orange-light);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
   .timeline-empty {
     text-align: center;
     padding: 3rem 1rem;
@@ -174,9 +214,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .timeline-empty p {
-    font-size: 0.9rem;
-  }
+  .timeline-empty p { font-size: 0.9rem; }
 </style>
 
 <div class="home-wrapper">
@@ -188,7 +226,7 @@
       <p>See what's happening on campus</p>
     </div>
 
-    <!-- Post Card -->
+    <!-- Post Composer Card -->
     <div class="post-card">
       <div class="post-card-header">
         <span>What's on your mind?</span>
@@ -197,7 +235,14 @@
         <form method="POST" action="">
           {% csrf_token %}
           <div class="post-input-row">
-            <img src="{% static 'images/Empty-PFP.jpg' %}" alt="Profile Picture" class="post-avatar">
+
+            {# Show current user's avatar in the composer #}
+            {% if user.is_authenticated and user.profile.avatar_url %}
+              <img src="{{ user.profile.avatar_url }}" alt="Your avatar" class="post-avatar">
+            {% else %}
+              <div class="post-avatar-placeholder">👤</div>
+            {% endif %}
+
             <textarea
               name="tweet_content"
               id="tweetInput"
@@ -217,11 +262,15 @@
         <!-- Timeline -->
         {% if posts %}
           {% for post in posts %}
-            <div style="background:#fff; border-radius:10px; padding:1rem 1.25rem; margin-bottom:0.85rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+            <div class="timeline-post">
 
-              <!-- Post Header -->
-              <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem;">
-                <img src="{% static 'images/Empty-PFP.jpg' %}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+              <!-- Post Header with author avatar -->
+              <div class="timeline-post-header">
+                {% if post.author.profile.avatar_url %}
+                  <img src="{{ post.author.profile.avatar_url }}" alt="{{ post.author.username }}" class="timeline-avatar">
+                {% else %}
+                  <div class="timeline-avatar-placeholder">👤</div>
+                {% endif %}
                 <span style="font-weight:600; font-size:0.9rem; color:#1a1a1a;">{{ post.author.username }}</span>
                 <span style="font-size:0.75rem; color:#999; margin-left:auto;">{{ post.created_at|timesince }} ago</span>
               </div>

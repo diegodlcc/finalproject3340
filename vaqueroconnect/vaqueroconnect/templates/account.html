@@ -2,42 +2,395 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body text-center p-4">
 
-                    <!-- Profile Picture -->
-                    <img src="{% static 'images/Empty-PFP.jpg' %}" 
-                         alt="Profile Picture" 
-                         class="rounded-circle mb-3" 
-                         width="100" height="100">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-                    <!-- Username -->
-                    <h3 class="fw-bold">{{ user.username }}</h3>
+  :root {
+    --utrgv-orange: #ed7d31;
+    --utrgv-orange-dark: #c9621a;
+    --utrgv-orange-light: #fef0e6;
+    --dark: #1a1a1a;
+    --muted: #777;
+    --border: #e8e0d8;
+  }
 
-                    <!-- Email -->
-                    <p class="text-muted">{{ user.email|default:"No email set" }}</p>
+  .account-wrapper {
+    min-height: calc(100vh - 56px);
+    background: #f7f3ef;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem 1rem;
+  }
 
-                    <!-- Account Info -->
-                    <hr>
-                    <div class="text-start">
-                        <p><strong>Username:</strong> {{ user.username }}</p>
-                        <p><strong>Email:</strong> {{ user.email|default:"Not provided" }}</p>
-                        <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
-                        <p><strong>Last login:</strong> {{ user.last_login|date:"F j, Y" }}</p>
-                    </div>
+  .account-inner {
+    max-width: 620px;
+    margin: 0 auto;
+  }
 
-                    <!-- Logout -->
-                    <form method="POST" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger w-100 mt-3">Logout</button>
-                    </form>
+  .account-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
 
-                </div>
-            </div>
-        </div>
+  .account-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    color: var(--utrgv-orange);
+    margin: 0;
+  }
+
+  .account-header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0;
+    font-weight: 300;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 40px rgba(237,125,49,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .profile-card-header {
+    background: var(--utrgv-orange);
+    padding: 2rem;
+    border-radius: 16px 16px 0 0;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+    background: #ccc;
+  }
+
+  .profile-avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 2rem;
+    color: #fff;
+    border: 3px solid rgba(255,255,255,0.4);
+  }
+
+  .profile-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+  }
+
+  .profile-bio {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0;
+    font-weight: 300;
+  }
+
+  .profile-card-body {
+    padding: 1.5rem 2rem;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .info-item {
+    background: #f7f3ef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .info-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  /* Section Cards */
+  .section-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(237,125,49,0.07), 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-header {
+    padding: 0.85rem 1.5rem;
+    background: #f7f3ef;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    color: var(--dark);
+  }
+
+  .section-body {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .field-group {
+    margin-bottom: 1rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .field-group input,
+  .field-group textarea {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--dark);
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .field-group input:focus,
+  .field-group textarea:focus {
+    border-color: var(--utrgv-orange);
+    box-shadow: 0 0 0 3px rgba(237,125,49,0.12);
+    background: #fff;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--utrgv-orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-save:hover {
+    background: var(--utrgv-orange-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-logout {
+    width: 100%;
+    padding: 0.75rem;
+    background: #fdecea;
+    color: #c0392b;
+    border: 1.5px solid #c0392b;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-logout:hover { background: #fbd4d1; }
+
+  .alert {
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .alert-success {
+    background: #eafaf1;
+    color: #1e8449;
+    border: 1px solid #a9dfbf;
+  }
+
+  .alert-error {
+    background: #fdedec;
+    color: #c0392b;
+    border: 1px solid #f5b7b1;
+  }
+
+  .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.3rem 0 0;
+  }
+
+  .errorlist li {
+    font-size: 0.78rem;
+    color: #c0392b;
+    font-weight: 500;
+  }
+</style>
+
+<div class="account-wrapper">
+  <div class="account-inner">
+
+    <div class="account-header">
+      <h1>My Account</h1>
+      <p>Manage your Vaquero Connect profile</p>
     </div>
+
+    <!-- Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Profile Overview Card -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        {% if profile.avatar_url %}
+          <img src="{{ profile.avatar_url }}" alt="Profile Picture" class="profile-avatar">
+        {% else %}
+          <div class="profile-avatar-placeholder">👤</div>
+        {% endif %}
+        <div class="profile-name">{{ user.username }}</div>
+        {% if profile.bio %}
+          <div class="profile-bio">{{ profile.bio }}</div>
+        {% else %}
+          <div class="profile-bio">No bio yet</div>
+        {% endif %}
+      </div>
+      <div class="profile-card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Email</div>
+            <div class="info-value">{{ user.email|default:"Not set" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Member Since</div>
+            <div class="info-value">{{ user.date_joined|date:"M j, Y" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Last Login</div>
+            <div class="info-value">{{ user.last_login|date:"M j, Y" }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Role</div>
+            <div class="info-value">{% if user.groups.all %}{{ user.groups.first.name|title }}{% else %}Student{% endif %}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Update Avatar & Bio -->
+    <div class="section-card">
+      <div class="section-header">Profile Picture & Bio</div>
+      <div class="section-body">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_avatar">
+          <div class="field-group">
+            <label for="avatar_url">Profile Picture URL</label>
+            <input type="url" name="avatar_url" id="avatar_url" placeholder="https://example.com/your-photo.jpg" value="{{ profile.avatar_url }}">
+          </div>
+          <div class="field-group">
+            <label for="bio">Bio</label>
+            <textarea name="bio" id="bio" rows="2" maxlength="160" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+          </div>
+          <button type="submit" class="btn-save">Save Avatar & Bio</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Update Username & Email -->
+    <div class="section-card">
+      <div class="section-header">Update Info</div>
+      <div class="section-body">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_info">
+          <div class="field-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" value="{{ user.username }}" required>
+          </div>
+          <div class="field-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="{{ user.email }}" placeholder="your@email.com">
+          </div>
+          <button type="submit" class="btn-save">Save Info</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="section-card">
+      <div class="section-header">Change Password</div>
+      <div class="section-body">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="change_password">
+          {% for field in password_form %}
+            <div class="field-group">
+              <label>{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <ul class="errorlist">
+                  {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn-save">Change Password</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="section-card">
+      <div class="section-body">
+        <form method="POST" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-logout">Logout</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}

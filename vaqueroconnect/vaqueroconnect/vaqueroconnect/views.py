@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login as auth_login
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import login as auth_login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .models import Post
+from django.contrib import messages
+from .models import Post, Profile
 
 # This is the Homepage
 def home(request):
@@ -20,26 +21,56 @@ def home(request):
 # This is the Account Management page
 @login_required
 def account(request):
-    # Look in templates for account.html
-    return render(request, 'account.html')
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # Update username and email
+        if action == 'update_info':
+            username = request.POST.get('username', '').strip()
+            email = request.POST.get('email', '').strip()
+            if username:
+                request.user.username = username
+            request.user.email = email
+            request.user.save()
+            messages.success(request, 'Profile updated successfully!')
+
+        # Update avatar URL and bio
+        elif action == 'update_avatar':
+            avatar_url = request.POST.get('avatar_url', '').strip()
+            bio = request.POST.get('bio', '').strip()
+            profile.avatar_url = avatar_url
+            profile.bio = bio
+            profile.save()
+            messages.success(request, 'Avatar updated successfully!')
+
+        # Change password
+        elif action == 'change_password':
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Password changed successfully!')
+            else:
+                messages.error(request, 'Please fix the errors below.')
+                return render(request, 'account.html', {'password_form': form, 'profile': profile})
+
+        return redirect('account')
+
+    password_form = PasswordChangeForm(request.user)
+    return render(request, 'account.html', {'password_form': password_form, 'profile': profile})
 
 # This is account creation
 def signup(request):
-    # 1. If the user clicks the "Sign Up" button (sending data to the server)
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        # 2. Django checks if the username is taken or passwords don't match
         if form.is_valid():
-            # 3. Save user to database
             user = form.save()
-            # 4. Automatically log the user in right after they sign up
             auth_login(request, user)
-            # 5. Send them to the homepage
             return redirect('home')
-    # 6. If they are just visiting the page for the first time, show a blank form
     else:
         form = UserCreationForm()
-
     return render(request, 'signup.html', {'form': form})
 
 # Delete a post (only the author can delete)
