@@ -8,16 +8,35 @@ class Post(models.Model):
     content = models.CharField(max_length=160)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
+
     def __str__(self):
         return f"{self.author.username}: {self.content[:30]}"
+    
+    def total_likes(self):
+        return self.likes.count()
 
     class Meta:
         ordering = ['-created_at']  # Newest posts first
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Comment by {self.author.username} on {self.post}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar_url = models.URLField(blank=True, default='')
     bio = models.CharField(max_length=160, blank=True, default='')
+
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s profile"

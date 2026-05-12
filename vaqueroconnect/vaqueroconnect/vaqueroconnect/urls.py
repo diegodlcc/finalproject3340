@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views 
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +30,12 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("post/<int:post_id>/delete/", views.delete_post, name="delete_post"),  
     path("post/<int:post_id>/edit/", views.edit_post, name="edit_post"), 
+    path("like/<int:post_id>/", views.like_post, name="like_post"),
+    path("delete_comment/<int:comment_id>/", views.delete_comment, name="delete_comment"),
+    path("update_profile_pic/", views.update_profile_pic, name="update_profile_pic"),
+    path("add_comment/<int:post_id>/", views.add_comment, name="add_comment"),
     path("events/", include('events.urls')),       
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

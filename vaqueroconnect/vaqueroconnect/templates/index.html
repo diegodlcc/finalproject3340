@@ -236,8 +236,9 @@
           {% csrf_token %}
           <div class="post-input-row">
 
-            {# Show current user's avatar in the composer #}
-            {% if user.is_authenticated and user.profile.avatar_url %}
+            {% if user.is_authenticated and user.profile.profile_picture %}
+              <img src="{{ user.profile.profile_picture.url }}" alt="Your avatar" class="post-avatar">
+            {% elif user.is_authenticated and user.profile.avatar_url %}
               <img src="{{ user.profile.avatar_url }}" alt="Your avatar" class="post-avatar">
             {% else %}
               <div class="post-avatar-placeholder">👤</div>
@@ -266,11 +267,14 @@
 
               <!-- Post Header with author avatar -->
               <div class="timeline-post-header">
-                {% if post.author.profile.avatar_url %}
+                {% if post.author.profile.profile_picture %}
+                  <img src="{{ post.author.profile.profile_picture.url }}" alt="{{ post.author.username }}" class="timeline-avatar">
+                {% elif post.author.profile.avatar_url %}
                   <img src="{{ post.author.profile.avatar_url }}" alt="{{ post.author.username }}" class="timeline-avatar">
                 {% else %}
                   <div class="timeline-avatar-placeholder">👤</div>
                 {% endif %}
+
                 <span style="font-weight:600; font-size:0.9rem; color:#1a1a1a;">{{ post.author.username }}</span>
                 <span style="font-size:0.75rem; color:#999; margin-left:auto;">{{ post.created_at|timesince }} ago</span>
               </div>
@@ -290,7 +294,7 @@
                 </form>
 
                 <!-- Edit & Delete Buttons -->
-                <div style="display:flex; gap:0.5rem;">
+                <div style="display:flex; gap:0.5rem; margin-bottom: 0.5rem;">
                   <button onclick="toggleEdit('{{ post.id }}')" style="padding:0.25rem 0.75rem; background:#fef0e6; color:#ed7d31; border:1px solid #ed7d31; border-radius:6px; font-size:0.75rem; cursor:pointer;">Edit</button>
                   <form method="POST" action="{% url 'delete_post' post.id %}" style="display:inline;">
                     {% csrf_token %}
@@ -299,8 +303,76 @@
                 </div>
               {% endif %}
 
+              <!-- Likes and Comments -->
+              <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.8rem; margin-bottom: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f0f0f0;">
+                <form method="POST" action="{% url 'like_post' post.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                        {% if user in post.likes.all %}
+                            <span style="font-size: 1.1rem; color: #ed7d31;">❤️</span>
+                        {% else %}
+                            <span style="font-size: 1.1rem; filter: grayscale(100%); opacity: 0.5;">❤️</span>
+                        {% endif %}
+                        <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.total_likes }}</span>
+                    </button>
+                </form>
+
+                <div style="display: flex; align-items: center; gap: 0.3rem;">
+                    <span style="font-size: 1.1rem; opacity: 0.7;">💬</span>
+                    <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.comments.count }}</span>
+                </div>
+              </div>
+
+              <!-- Comments Display -->
+              <div style="background: #fafafa; border-radius: 8px; padding: 0.75rem; margin-top: 0.8rem; border: 1px solid #e8e0d8;">
+                  <div style="max-height: 150px; overflow-y: auto;">
+                      {% for comment in post.comments.all %}
+                          <div style="margin-bottom: 0.6rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                              <div>
+                                  <span style="font-weight: 600; font-size: 0.8rem; color: #1a1a1a;">{{ comment.author.username }}</span>
+                                  <span style="font-size: 0.7rem; color: #999; margin-left: 0.3rem;">{{ comment.created_at|timesince }} ago</span>
+                                  <p style="margin: 0.1rem 0 0; font-size: 0.85rem; color: #444;">{{ comment.body }}</p>
+                              </div>
+                              {% if user == comment.author or user == post.author %}
+                                  <form method="POST" action="{% url 'delete_comment' comment.id %}" style="margin: 0;">
+                                      {% csrf_token %}
+                                      <button type="submit" onclick="return confirm('Delete this comment?')" style="background: none; border: none; color: #c0392b; font-size: 0.75rem; cursor: pointer; padding: 0;">Delete</button>
+                                  </form>
+                              {% endif %}
+                          </div>
+                      {% empty %}
+                          <p style="font-size: 0.8rem; color: #999; margin: 0; font-style: italic;">No comments yet.</p>
+                      {% endfor %}
+
+                      <!-- Comment text box -->
+                      <form method="POST" action="{% url 'add_comment' post.id %}" style="display: flex; gap: 0.5rem; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid #eee;">
+                          {% csrf_token %}
+                          <input type="text" name="comment_body" placeholder="Write a comment..." required
+                                 style="flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 0.4rem 0.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none;">
+                          <button type="submit" style="background: #ed7d31; color: #fff; border: none; border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s;">Reply</button>
+                      </form>
+
+                  </div>
+                </div>
             </div>
           {% endfor %}
+          
+          <!-- New Page controls -->
+          <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-bottom: 1rem;">
+              {% if posts.has_previous %}
+                  <a href="?page=1" style="padding: 0.4rem 0.8rem; background: #e8e0d8; color: #555; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">&laquo; First</a>
+                  <a href="?page={{ posts.previous_page_number }}" style="padding: 0.4rem 0.8rem; background: #e8e0d8; color: #555; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">Previous</a>
+              {% endif %}
+
+              <span style="font-weight: bold; color: var(--utrgv-orange); font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px;">
+                  Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+              </span>
+
+              {% if posts.has_next %}
+                  <a href="?page={{ posts.next_page_number }}" style="padding: 0.4rem 1rem; background: var(--utrgv-orange); color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(237,125,49,0.3);">Next &raquo;</a>
+              {% endif %}
+          </div>
+
         {% else %}
           <div class="timeline-empty">
             <span>📋</span>

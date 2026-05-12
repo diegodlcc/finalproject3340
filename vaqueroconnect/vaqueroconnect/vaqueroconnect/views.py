@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Post, Profile
+from django.core.paginator import Paginator
+from .models import Post, Profile, Comment
 
 # This is the Homepage
 def home(request):
@@ -16,7 +17,12 @@ def home(request):
         return redirect('home')
 
     posts = Post.objects.all()
-    return render(request, 'index.html', {'posts': posts})
+
+    paginator = Paginator(posts, 4)  # Show 5 posts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'index.html', {'posts': page_obj})
 
 # This is the Account Management page
 @login_required
@@ -59,7 +65,16 @@ def account(request):
         return redirect('account')
 
     password_form = PasswordChangeForm(request.user)
-    return render(request, 'account.html', {'password_form': password_form, 'profile': profile})
+
+    my_posts = Post.objects.filter(author=request.user)
+    commented_posts = Post.objects.filter(comments__author=request.user).distinct()
+
+    return render(request, 'account.html', {
+        'password_form': password_form, 
+        'profile': profile,
+        'my_posts': my_posts,
+        'commented_posts': commented_posts
+    })
 
 # This is account creation
 def signup(request):
@@ -91,3 +106,47 @@ def edit_post(request, post_id):
             post.content = content
             post.save()
     return redirect('home')
+
+# Like or unlike a post
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == "POST":
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+# Delete a comment (either your comment on someone's post, or someone else's comment on your post)
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.method == 'POST':
+        # Only author of the comment or the post can delete the comment
+        if request.user == comment.author or request.user == comment.post.author:
+            comment.delete()
+            messages.success(request, 'Comment deleted!')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+# Update profile picture
+@login_required
+def update_profile_pic(request):
+    if request.method == 'POST':
+        profile = request.user.profile
+        if 'profile_pic' in request.FILES:
+            profile.profile_picture = request.FILES['profile_pic']
+            profile.save()
+            messages.success(request, 'Profile picture updated!')
+    return redirect('account')
+
+# Add a comment to a post
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+
+        body = request.POST.get('comment_body', '').strip()
+        if body:
+            Comment.objects.create(post=post, author=request.user, body=body)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))

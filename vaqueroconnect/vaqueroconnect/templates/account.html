@@ -64,11 +64,11 @@
   }
 
   .profile-avatar {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(255,255,255,0.5);
+    border: 3px solid rgba(255,255,255,0.8);
     margin-bottom: 0.75rem;
     background: #ccc;
   }
@@ -89,17 +89,17 @@
 
   .profile-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     letter-spacing: 1.5px;
     color: #fff;
     margin: 0;
   }
 
   .profile-bio {
-    color: rgba(255,255,255,0.85);
-    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
     margin: 0.3rem 0 0;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .profile-card-body {
@@ -148,7 +148,7 @@
     background: #f7f3ef;
     border-bottom: 1px solid var(--border);
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     letter-spacing: 1.5px;
     color: var(--dark);
   }
@@ -281,17 +281,32 @@
     <!-- Profile Overview Card -->
     <div class="profile-card">
       <div class="profile-card-header">
-        {% if profile.avatar_url %}
+        
+        {% if user.profile.profile_picture %}
+          <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="profile-avatar">
+        {% elif profile.avatar_url %}
           <img src="{{ profile.avatar_url }}" alt="Profile Picture" class="profile-avatar">
         {% else %}
           <div class="profile-avatar-placeholder">👤</div>
         {% endif %}
+        
         <div class="profile-name">{{ user.username }}</div>
+        
         {% if profile.bio %}
           <div class="profile-bio">{{ profile.bio }}</div>
         {% else %}
           <div class="profile-bio">No bio yet</div>
         {% endif %}
+
+        <!-- Upload new pfp button -->
+        <form id="pfp-form" method="POST" action="{% url 'update_profile_pic' %}" enctype="multipart/form-data" style="margin-top: 1rem;">
+            {% csrf_token %}
+            <input type="file" id="profile_pic_upload" name="profile_pic" accept="image/*" required style="display: none;" onchange="document.getElementById('pfp-form').submit();">
+            <label for="profile_pic_upload" style="background-color: rgba(255,255,255,0.2); color: white; font-weight: bold; cursor: pointer; border-radius: 6px; padding: 0.4rem 1rem; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.5); display: inline-block; transition: 0.2s;">
+                📷 Upload Custom Picture
+            </label>
+        </form>
+
       </div>
       <div class="profile-card-body">
         <div class="info-grid">
@@ -315,29 +330,29 @@
       </div>
     </div>
 
-    <!-- Update Avatar & Bio -->
+    <!-- Update Avatar URL & Bio -->
     <div class="section-card">
-      <div class="section-header">Profile Picture & Bio</div>
+      <div class="section-header">Web Avatar & Bio</div>
       <div class="section-body">
         <form method="POST">
           {% csrf_token %}
           <input type="hidden" name="action" value="update_avatar">
           <div class="field-group">
-            <label for="avatar_url">Profile Picture URL</label>
+            <label for="avatar_url">Avatar Image Link (Optional)</label>
             <input type="url" name="avatar_url" id="avatar_url" placeholder="https://example.com/your-photo.jpg" value="{{ profile.avatar_url }}">
           </div>
           <div class="field-group">
             <label for="bio">Bio</label>
             <textarea name="bio" id="bio" rows="2" maxlength="160" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
           </div>
-          <button type="submit" class="btn-save">Save Avatar & Bio</button>
+          <button type="submit" class="btn-save">Save Info</button>
         </form>
       </div>
     </div>
 
     <!-- Update Username & Email -->
     <div class="section-card">
-      <div class="section-header">Update Info</div>
+      <div class="section-header">Update Credentials</div>
       <div class="section-body">
         <form method="POST">
           {% csrf_token %}
@@ -380,8 +395,105 @@
       </div>
     </div>
 
-    <!-- Logout -->
-    <div class="section-card">
+    <!-- Recent Posts -->
+    <h1 class="text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--utrgv-orange); margin-top: 3rem; margin-bottom: 1rem; letter-spacing: 1.5px;">My Recent Posts</h1>
+    {% if my_posts %}
+        {% for post in my_posts %}
+            <div class="section-card" style="padding: 1.5rem;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold" style="color: #1a1a1a; font-weight: bold;">{{ post.author.username }}</span>
+                    <small style="color: #999; font-size: 0.8rem; float: right;">{{ post.created_at|timesince }} ago</small>
+                </div>
+                <p class="mb-0" style="color: #333; margin-top: 0.5rem; margin-bottom: 1rem;">{{ post.content }}</p>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <form method="POST" action="{% url 'like_post' post.id %}" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                            {% if user in post.likes.all %}
+                                <span style="font-size: 1.1rem; color: #ed7d31;">❤️</span>
+                            {% else %}
+                                <span style="font-size: 1.1rem; filter: grayscale(100%); opacity: 0.5;">❤️</span>
+                            {% endif %}
+                            <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.total_likes }}</span>
+                        </button>
+                    </form>
+
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <span style="font-size: 1.1rem; opacity: 0.7;">💬</span>
+                        <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.comments.count }}</span>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div style="background: #fafafa; border-radius: 8px; padding: 0.75rem; margin-top: 1rem; border: 1px solid #e8e0d8;">
+                    <div style="max-height: 150px; overflow-y: auto;">
+                        {% for comment in post.comments.all %}
+                            <div style="margin-bottom: 0.6rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                                <div>
+                                    <span style="font-weight: 600; font-size: 0.8rem; color: #1a1a1a;">{{ comment.author.username }}</span>
+                                    <span style="font-size: 0.7rem; color: #999; margin-left: 0.3rem;">{{ comment.created_at|timesince }} ago</span>
+                                    <p style="margin: 0.1rem 0 0; font-size: 0.85rem; color: #444;">{{ comment.body }}</p>
+                                </div>
+                                {% if user == comment.author or user == post.author %}
+                                    <form method="POST" action="{% url 'delete_comment' comment.id %}" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <button type="submit" onclick="return confirm('Delete this comment?')" style="background: none; border: none; color: #c0392b; font-size: 0.75rem; cursor: pointer; padding: 0;">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <p style="font-size: 0.8rem; color: #999; margin: 0; font-style: italic;">No comments yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center" style="margin-bottom: 2rem;">
+            <p style="color: var(--muted); font-style: italic;">You haven't posted anything yet!</p>
+        </div>
+    {% endif %}
+
+    <!-- Recent Interactions -->
+    <h1 class="text-center" style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--utrgv-orange); margin-top: 2rem; margin-bottom: 1rem; letter-spacing: 1.5px;">Recent Interactions</h1>
+    {% if commented_posts %}
+        {% for post in commented_posts %}
+            <div class="section-card" style="padding: 1.5rem;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold" style="color: #1a1a1a; font-weight: bold;">{{ post.author.username }}</span>
+                    <small style="color: #999; font-size: 0.8rem; float: right;">{{ post.created_at|timesince }} ago</small>
+                </div>
+                <p class="mb-0" style="color: #333; margin-top: 0.5rem; margin-bottom: 1rem;">{{ post.content }}</p>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <form method="POST" action="{% url 'like_post' post.id %}" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                            {% if user in post.likes.all %}
+                                <span style="font-size: 1.1rem; color: #ed7d31;">❤️</span>
+                            {% else %}
+                                <span style="font-size: 1.1rem; filter: grayscale(100%); opacity: 0.5;">❤️</span>
+                            {% endif %}
+                            <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.total_likes }}</span>
+                        </button>
+                    </form>
+
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <span style="font-size: 1.1rem; opacity: 0.7;">💬</span>
+                        <span style="font-size: 0.9rem; color: #555; font-weight: 600;">{{ post.comments.count }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center" style="margin-bottom: 2rem;">
+            <p style="color: var(--muted); font-style: italic;">You haven't interacted with any posts yet.</p>
+        </div>
+    {% endif %}
+
+    <!-- Logout  -->
+    <div class="section-card" style="margin-top: 3rem;">
       <div class="section-body">
         <form method="POST" action="{% url 'logout' %}">
           {% csrf_token %}
