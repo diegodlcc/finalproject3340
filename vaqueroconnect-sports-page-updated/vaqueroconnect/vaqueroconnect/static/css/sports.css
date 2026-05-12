@@ -675,3 +675,78 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ===== Reply Box ===== */
+
+.reply-box {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* REPLY LIST */
+
+.reply-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* POSTED REPLY */
+
+.posted-reply {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* USER NAME */
+
+.reply-user {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ed7d31;
+  margin-bottom: 4px;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* REPLY TEXT */
+
+.reply-text {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* TEXTAREA */
+
+.reply-input {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #fff;
+  outline: none;
+  resize: none;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* BUTTON */
+
+.reply-submit {
+  margin-top: 10px;
+  background: #ed7d31;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}

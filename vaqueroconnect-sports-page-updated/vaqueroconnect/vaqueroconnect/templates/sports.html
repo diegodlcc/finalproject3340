@@ -114,7 +114,7 @@
             <div class="sp-post-actions">
               <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'm In</button>
               <button class="sp-action-btn" onclick="handleLike(this)">🔥 4</button>
-              <button class="sp-action-btn">💬 Reply</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
             </div>
           </div>
 
@@ -128,7 +128,7 @@
             <div class="sp-post-actions">
               <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ Count Me In</button>
               <button class="sp-action-btn" onclick="handleLike(this)">🔥 11</button>
-              <button class="sp-action-btn">💬 Reply</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
             </div>
           </div>
 
@@ -142,7 +142,7 @@
             <div class="sp-post-actions">
               <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'm In</button>
               <button class="sp-action-btn" onclick="handleLike(this)">🔥 6</button>
-              <button class="sp-action-btn">💬 Reply</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
             </div>
           </div>
 
@@ -156,7 +156,7 @@
             <div class="sp-post-actions">
               <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'll Go!</button>
               <button class="sp-action-btn" onclick="handleLike(this)">🔥 8</button>
-              <button class="sp-action-btn">💬 Reply</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
             </div>
           </div>
         </div>
@@ -194,68 +194,287 @@ function selectType(el, type) {
   document.querySelectorAll('.sp-type-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   selectedType = type;
+
   const label = document.getElementById('selectedTypeLabel');
-  if (label) label.textContent = type;
+
+  if (label) {
+    label.textContent = type;
+  }
 }
 
 function toggleCat(el) {
+
   el.classList.toggle('active');
-  showToast(el.classList.contains('active') ? '✅ Subscribed to ' + el.textContent.trim() : '🔕 Unsubscribed from ' + el.textContent.trim());
+
+  showToast(
+    el.classList.contains('active')
+      ? '✅ Subscribed to ' + el.textContent.trim()
+      : '🔕 Unsubscribed from ' + el.textContent.trim()
+  );
+
 }
 
 function submitPost() {
+
   const input = document.getElementById('postInput');
+
   const text = input.value.trim();
+
   if (!text) return;
+
   const tagMap = {
-    '🎟 Going to Game':  { cls: 'looking',   label: '🎟 Going to Game' },
-    '🤝 Need Teammates': { cls: 'team',       label: '🤝 Need Teammates' },
-    '📺 Watch Party':    { cls: 'watchparty', label: '📺 Watch Party' },
-    '📣 Hype':           { cls: 'hype',       label: '📣 Hype' },
+    '🎟 Going to Game': {
+      cls: 'looking',
+      label: '🎟 Going to Game'
+    },
+
+    '🤝 Need Teammates': {
+      cls: 'team',
+      label: '🤝 Need Teammates'
+    },
+
+    '📺 Watch Party': {
+      cls: 'watchparty',
+      label: '📺 Watch Party'
+    },
+
+    '📣 Hype': {
+      cls: 'hype',
+      label: '📣 Hype'
+    },
   };
-  const tag = tagMap[selectedType] || tagMap['🎟 Going to Game'];
+
+  const tag = tagMap[selectedType];
+
   const post = document.createElement('div');
+
   post.className = 'sp-post';
+
   post.innerHTML = `
     <div class="sp-post-header">
-      <div class="sp-post-avatar" style="background:#ed7d31;">Y</div>
-      <div class="sp-post-meta"><div class="sp-post-name">You</div><div class="sp-post-time">Just now</div></div>
-      <span class="sp-post-tag ${tag.cls}">${tag.label}</span>
+
+      <div class="sp-post-avatar" style="background:#ed7d31;">
+        Y
+      </div>
+
+      <div class="sp-post-meta">
+        <div class="sp-post-name">
+          You
+        </div>
+
+        <div class="sp-post-time">
+          Just now
+        </div>
+      </div>
+
+      <span class="sp-post-tag ${tag.cls}">
+        ${tag.label}
+      </span>
+
     </div>
-    <div class="sp-post-text">${text}</div>
+
+    <div class="sp-post-text">
+      ${text}
+    </div>
+
     <div class="sp-post-actions">
-      <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'm In</button>
-      <button class="sp-action-btn" onclick="handleLike(this)">🔥 0</button>
-      <button class="sp-action-btn">💬 Reply</button>
-    </div>`;
+
+      <button
+        class="sp-action-btn join-btn"
+        onclick="handleJoin(this)"
+        >
+        ✋ Count Me In
+      </button>
+
+      <button
+        class="sp-action-btn"
+        onclick="handleLike(this)"
+      >
+        🔥 0
+      </button>
+
+      <button
+      class="sp-action-btn reply-btn"
+      onclick="toggleReply(this)"
+      >
+        💬 Reply
+      </button>
+
+    </div>
+  `;
+
   document.getElementById('feedPosts').prepend(post);
+
   input.value = '';
+
   postCount++;
-  document.getElementById('postCount').textContent = postCount + ' posts';
+
+  document.getElementById('postCount').textContent =
+    postCount + ' posts';
+
   showToast('🏟 Post shared with the Vaquero community!');
+
 }
+
+/* =========================
+   JOIN / UNJOIN
+========================= */
 
 function handleJoin(btn) {
-  btn.textContent = '✅ Joined!';
-  btn.style.background = '#22c55e';
-  btn.style.borderColor = '#22c55e';
-  btn.style.color = '#fff';
-  btn.disabled = true;
-  showToast('🤝 You joined! Check back for details.');
+
+  // UNJOIN
+  if (btn.classList.contains('joined')) {
+
+    btn.classList.remove('joined');
+
+    btn.innerHTML = '✋ Count Me In';
+
+    btn.style.background = 'transparent';
+
+    btn.style.borderColor = 'rgba(255,255,255,0.12)';
+
+    btn.style.color = 'rgba(255,255,255,0.45)';
+
+    showToast('❌ You are no longer going.');
+
+  }
+
+  // JOIN
+  else {
+
+    btn.classList.add('joined');
+
+    btn.innerHTML = '❌ Can’t Make It';
+
+    btn.style.background = '#22c55e';
+
+    btn.style.borderColor = '#22c55e';
+
+    btn.style.color = '#fff';
+
+    showToast('🤝 You joined!');
+
+  }
+
 }
+
+/* =========================
+   LIKE BUTTON
+========================= */
 
 function handleLike(btn) {
+
   if (btn.classList.contains('liked')) return;
+
   btn.classList.add('liked');
-  const num = parseInt(btn.textContent.replace(/\D/g, '')) + 1;
+
+  const num =
+    parseInt(btn.textContent.replace(/\D/g, '')) + 1;
+
   btn.textContent = '🔥 ' + num;
+
 }
 
+/* =========================
+   REPLY BOX
+========================= */
+
+function toggleReply(btn) {
+
+  const post = btn.closest('.sp-post');
+
+  let replyBox = post.querySelector('.reply-box');
+
+  // CLOSE IF OPEN
+  if (replyBox) {
+
+    replyBox.remove();
+
+    return;
+
+  }
+
+  // CREATE REPLY BOX
+  replyBox = document.createElement('div');
+
+  replyBox.className = 'reply-box';
+
+  replyBox.innerHTML = `
+
+    <!-- REPLIES APPEAR HERE -->
+    <div class="reply-list"></div>
+
+    <!-- INPUT -->
+    <textarea
+      class="reply-input"
+      placeholder="Write your reply..."
+    ></textarea>
+
+    <button class="reply-submit">
+      Reply
+    </button>
+
+  `;
+
+  post.appendChild(replyBox);
+
+  // SUBMIT REPLY
+  const submitBtn =
+    replyBox.querySelector('.reply-submit');
+
+  submitBtn.addEventListener('click', function () {
+
+    const input =
+      replyBox.querySelector('.reply-input');
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const reply = document.createElement('div');
+
+    reply.className = 'posted-reply';
+
+    reply.innerHTML = `
+      <div class="reply-user">
+        You
+      </div>
+
+      <div class="reply-text">
+        ${text}
+      </div>
+    `;
+
+    // ADD REPLY TO TOP
+    replyBox
+      .querySelector('.reply-list')
+      .prepend(reply);
+
+    input.value = '';
+
+  });
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
 function showToast(msg) {
+
   const t = document.getElementById('spToast');
+
   t.textContent = msg;
+
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+
+  setTimeout(() => {
+
+    t.classList.remove('show');
+
+  }, 3000);
+
 }
 </script>
 
