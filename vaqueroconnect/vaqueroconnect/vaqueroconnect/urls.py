@@ -29,4 +29,5 @@ urlpatterns = [
     path("post/<int:post_id>/delete/", views.delete_post, name="delete_post"),  
     path("post/<int:post_id>/edit/", views.edit_post, name="edit_post"), 
     path("events/", include('events.urls')),       
+    path("sports/", views.sports, name="sports"),
 ]

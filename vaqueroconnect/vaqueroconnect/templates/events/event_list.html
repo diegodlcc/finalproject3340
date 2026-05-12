@@ -3,254 +3,479 @@
 
 {% block content %}
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/sports.css' %}">
 
-  :root {
-    --utrgv-orange: #ed7d31;
-    --utrgv-orange-dark: #c9621a;
-    --utrgv-orange-light: #fef0e6;
-    --dark: #1a1a1a;
-    --muted: #777;
-    --border: #e8e0d8;
-  }
+<div class="sp-toast" id="spToast"></div>
 
-  .events-wrapper {
-    min-height: calc(100vh - 56px);
-    background: #f7f3ef;
-    font-family: 'DM Sans', sans-serif;
-    padding: 2rem 1rem;
-  }
+<section class="sp-hero">
+  <div class="sp-hero-inner">
+    <div class="sp-eyebrow">⚡ UTRGV Athletics — Go Vaqueros</div>
+    <h1>VAQUERO<br><em>SPORTS</em></h1>
+    <p class="sp-hero-sub">Official home for UTRGV sports events, schedules, intramurals, and campus fitness.</p>
+  </div>
+</section>
 
-  .events-inner {
-    max-width: 800px;
-    margin: 0 auto;
-  }
+<section class="sp-body">
+  <div class="sp-wrap">
 
-  .events-header {
-    text-align: center;
-    margin-bottom: 1.75rem;
-  }
+    <aside class="sp-sidebar">
+      <div class="sp-sidebar-header"><h3>🏟 Browse Sports</h3></div>
+      <div class="sp-sidebar-body">
+        <div class="sp-sidebar-divider">Men's Sports</div>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">⚾</span> Baseball</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏀</span> Basketball</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏈</span> Football</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">⛳</span> Golf</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">⚽</span> Soccer</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🎾</span> Tennis</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏃</span> Track & Field</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🌄</span> Cross Country</a>
+        <div class="sp-sidebar-divider">Women's Sports</div>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏀</span> Basketball</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">⛳</span> Golf</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">⚽</span> Soccer</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏊</span> Swimming & Diving</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🎾</span> Tennis</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏃</span> Track & Field</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🏐</span> Volleyball</a>
+        <a class="sp-sport-link" href="https://www.showpass.com/o/university-of-texas-rio-grande-valley-utrgv/" target="_blank"><span class="sp-sport-em">🌄</span> Cross Country</a>
+      </div>
+      <a class="sp-sidebar-cta" href="https://goutrgv.com/calendar" target="_blank">📅 Full Schedule Calendar</a>
+    </aside>
 
-  .events-header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.8rem;
-    letter-spacing: 2px;
-    color: var(--utrgv-orange);
-    margin: 0;
-    line-height: 1.1;
-  }
+    <div>
+      <div class="sp-stats">
+        <div class="sp-stat"><div class="sp-stat-num">16</div><div class="sp-stat-label"> Division 1 Sports</div></div>
+        <div class="sp-stat"><div class="sp-stat-num">D1</div><div class="sp-stat-label">NCAA Division</div></div>
+        <div class="sp-stat"><div class="sp-stat-num">SLC</div><div class="sp-stat-label">Southland Conf.</div></div>
+      </div>
 
-  .events-header p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 0.3rem 0 0;
-    font-weight: 300;
-  }
+      <div class="sp-divider-head">
+        <h2>📢 SUBSCRIBE TO CATEGORIES</h2>
+        <p>Follow the sports you care about — get notified of upcoming events.</p>
+      </div>
+      <div class="sp-cat-filter">
+        <button class="sp-cat-btn active" onclick="toggleCat(this)">⚽ Soccer</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏀 Basketball</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">⚾ Baseball</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏈 Football</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏊 Swimming</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🎾 Tennis</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏃 Track & Field</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏐 Volleyball</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">💪 Intramurals</button>
+        <button class="sp-cat-btn" onclick="toggleCat(this)">🏋️ Campus Fitness</button>
+      </div>
 
-  /* Category Filter */
-  .filter-bar {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 1.75rem;
-  }
+      <div class="sp-divider-head">
+        <h2>🏟 STUDENT SPORTS FEED</h2>
+        <p>Find a squad, join a league, or rally students to watch the game together.</p>
+      </div>
 
-  .filter-btn {
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    background: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--muted);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
+      <div class="sp-feed">
+        <div class="sp-feed-header">
+          <div class="sp-feed-title">🗣 <span>Community</span></div>
+          <div class="sp-feed-count" id="postCount">4 posts</div>
+        </div>
 
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--utrgv-orange);
-    border-color: var(--utrgv-orange);
-    color: #fff;
-  }
+        <div class="sp-post-types">
+          <button class="sp-type-btn selected" onclick="selectType(this,'🎟 Going to Game')">🎟 Going to Game</button>
+          <button class="sp-type-btn" onclick="selectType(this,'🤝 Need Teammates')">🤝 Need Teammates</button>
+          <button class="sp-type-btn" onclick="selectType(this,'📺 Watch Party')">📺 Watch Party</button>
+          <button class="sp-type-btn" onclick="selectType(this,'📣 Hype')">📣 Hype</button>
+        </div>
 
-  /* Create Button */
-  .create-btn {
-    display: block;
-    width: fit-content;
-    margin: 0 auto 1.5rem;
-    padding: 0.6rem 1.5rem;
-    background: var(--utrgv-orange);
-    color: #fff;
-    border-radius: 8px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 1.5px;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .create-btn:hover {
-    background: var(--utrgv-orange-dark);
-    color: #fff;
-    transform: translateY(-1px);
-  }
-
-  /* Event Cards */
-  .event-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(237,125,49,0.08), 0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom: 1rem;
-    overflow: hidden;
-    display: flex;
-    transition: transform 0.15s;
-  }
-
-  .event-card:hover {
-    transform: translateY(-2px);
-  }
-
-  .event-card-accent {
-    width: 6px;
-    flex-shrink: 0;
-  }
-
-  .academic  { background: #3498db; }
-  .sports    { background: #2ecc71; }
-  .social    { background: #9b59b6; }
-  .emergency { background: #e74c3c; }
-
-  .event-card-body {
-    padding: 1rem 1.25rem;
-    flex: 1;
-  }
-
-  .event-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .event-title {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--dark);
-    text-decoration: none;
-  }
-
-  .event-title:hover {
-    color: var(--utrgv-orange);
-  }
-
-  .event-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
-    flex-shrink: 0;
-  }
-
-  .badge-academic  { background: #ebf5fb; color: #3498db; }
-  .badge-sports    { background: #eafaf1; color: #2ecc71; }
-  .badge-social    { background: #f5eef8; color: #9b59b6; }
-  .badge-emergency { background: #fdedec; color: #e74c3c; }
-
-  .event-meta {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 0.35rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .event-spots {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 0.35rem;
-  }
-
-  .event-spots.low { color: #e67e22; }
-  .event-spots.full { color: #c0392b; }
-
-  .empty-state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: var(--muted);
-  }
-
-  .empty-state span {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-</style>
-
-<div class="events-wrapper">
-  <div class="events-inner">
-
-    <div class="events-header">
-      <h1>Campus Events</h1>
-      <p>Discover what's happening at UTRGV</p>
-    </div>
-
-    <!-- Category Filter -->
-    <div class="filter-bar">
-      <a href="{% url 'event_list' %}" class="filter-btn {% if not selected_category %}active{% endif %}">All</a>
-      <a href="{% url 'event_list' %}?category=academic" class="filter-btn {% if selected_category == 'academic' %}active{% endif %}">Academic</a>
-      <a href="{% url 'event_list' %}?category=sports" class="filter-btn {% if selected_category == 'sports' %}active{% endif %}">Sports</a>
-      <a href="{% url 'event_list' %}?category=social" class="filter-btn {% if selected_category == 'social' %}active{% endif %}">Social</a>
-      <a href="{% url 'event_list' %}?category=emergency" class="filter-btn {% if selected_category == 'emergency' %}active{% endif %}">Emergency Support</a>
-    </div>
-
-    <!-- Create Event Button (club officers only) -->
-    {% if user.is_authenticated and user.groups.all|length > 0 %}
-      <a href="{% url 'event_create' %}" class="create-btn">+ Create Event</a>
-    {% endif %}
-
-    <!-- Event List -->
-    {% if events %}
-      {% for event in events %}
-        <div class="event-card">
-          <div class="event-card-accent {{ event.category }}"></div>
-          <div class="event-card-body">
-            <div class="event-card-top">
-              <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
-              <span class="event-badge badge-{{ event.category }}">{{ event.get_category_display }}</span>
-            </div>
-            <div class="event-meta">
-              <span>📅 {{ event.date }}</span>
-              <span>🕐 {{ event.time }}</span>
-              <span>📍 {{ event.location }}</span>
-            </div>
-            {% with spots=event.spots_left %}
-              <div class="event-spots {% if spots == 0 %}full{% elif spots <= 5 %}low{% endif %}">
-                {% if spots == 0 %}
-                  Full
-                {% elif spots <= 5 %}
-                  Only {{ spots }} spot{{ spots|pluralize }} left!
-                {% else %}
-                  {{ spots }} spots available
-                {% endif %}
-              </div>
-            {% endwith %}
+        {% if user.is_authenticated %}
+        <div class="sp-compose">
+          <div class="sp-compose-top">
+            <div class="sp-compose-avatar">{{ user.username|first|upper }}</div>
+            <textarea class="sp-compose-input" id="postInput" rows="2" placeholder="Who's going to the game? Need players for your intramural team? Post it here..."></textarea>
+          </div>
+          <div class="sp-compose-footer">
+            <span class="sp-compose-hint" id="selectedTypeLabel">🎟 Going to Game</span>
+            <button class="sp-post-btn" onclick="submitPost()">Post</button>
           </div>
         </div>
-      {% endfor %}
-    {% else %}
-      <div class="empty-state">
-        <span>📅</span>
-        <p>No events found{% if selected_category %} in this category{% endif %}.</p>
-      </div>
-    {% endif %}
+        {% else %}
+        <div class="sp-login-nudge">
+          <a href="{% url 'login' %}">Log in</a> to post — find teammates, plan watch parties, and hype up the Vaqueros!
+        </div>
+        {% endif %}
 
+        <div class="sp-posts" id="feedPosts">
+          <div class="sp-post">
+            <div class="sp-post-header">
+              <div class="sp-post-avatar" style="background:#2563eb;">M</div>
+              <div class="sp-post-meta"><div class="sp-post-name">Miguel R.</div><div class="sp-post-time">2 hours ago</div></div>
+              <span class="sp-post-tag team">🤝 Need Teammates</span>
+            </div>
+            <div class="sp-post-text">Starting an intramural basketball team for next semester! Need 3 more players — any skill level welcome. We play Tuesdays at the Rec Center. Drop a reply if you're interested 🏀</div>
+            <div class="sp-post-actions">
+              <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'm In</button>
+              <button class="sp-action-btn" onclick="handleLike(this)">🔥 4</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
+            </div>
+          </div>
+
+          <div class="sp-post">
+            <div class="sp-post-header">
+              <div class="sp-post-avatar" style="background:#7c3aed;">A</div>
+              <div class="sp-post-meta"><div class="sp-post-name">Alyssa T.</div><div class="sp-post-time">5 hours ago</div></div>
+              <span class="sp-post-tag watchparty">📺 Watch Party</span>
+            </div>
+            <div class="sp-post-text">Hosting a Vaqueros basketball watch party this Friday at 7PM in the University Center lounge! Bringing snacks 🍕 Everyone welcome — let's pack the place and show some spirit 🧡</div>
+            <div class="sp-post-actions">
+              <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ Count Me In</button>
+              <button class="sp-action-btn" onclick="handleLike(this)">🔥 11</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
+            </div>
+          </div>
+
+          <div class="sp-post">
+            <div class="sp-post-header">
+              <div class="sp-post-avatar" style="background:#059669;">J</div>
+              <div class="sp-post-meta"><div class="sp-post-name">Jorge M.</div><div class="sp-post-time">Yesterday</div></div>
+              <span class="sp-post-tag team">🤝 Need Teammates</span>
+            </div>
+            <div class="sp-post-text">Looking for 2 more players to join our intramural softball team — we're short handed for the spring league. No experience needed just show up and have fun ⚾ DM me or reply here!</div>
+            <div class="sp-post-actions">
+              <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'm In</button>
+              <button class="sp-action-btn" onclick="handleLike(this)">🔥 6</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
+            </div>
+          </div>
+
+          <div class="sp-post">
+            <div class="sp-post-header">
+              <div class="sp-post-avatar" style="background:#ed7d31;">S</div>
+              <div class="sp-post-meta"><div class="sp-post-name">Sofia L.</div><div class="sp-post-time">Yesterday</div></div>
+              <span class="sp-post-tag looking">🎟 Going to Game</span>
+            </div>
+            <div class="sp-post-text">Anyone going to the UTRGV soccer game Saturday at the Field Complex? Looking for people to go with — tickets are free with your student ID! ⚽🧡</div>
+            <div class="sp-post-actions">
+              <button class="sp-action-btn join-btn" onclick="handleJoin(this)">✋ I'll Go!</button>
+              <button class="sp-action-btn" onclick="handleLike(this)">🔥 8</button>
+              <button class="sp-action-btn reply-btn" onclick="toggleReply(this)">💬 Reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp-divider-head">
+        <h2>🗺 CAMPUS VENUES MAP</h2>
+        <p>Find where games and events take place across the UTRGV campus.</p>
+      </div>
+      <div class="sp-map-strip">
+        <div class="sp-map-header">
+          <div class="sp-map-title">📍 UTRGV Athletic Venues</div>
+          <a class="sp-map-link" href="https://www.utrgv.edu/maps/" target="_blank">Open Full Map →</a>
+        </div>
+        <iframe class="sp-map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3594.7!2d-98.1776!3d26.3019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x866303b2b44fb5b5%3A0x34ff3ea19e3e2e4a!2sUTRGV%20Edinburg%20Campus!5e0!3m2!1sen!2sus!4v1" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="sp-venues">
+          <span class="sp-venue-tag">🏟 Bert Ogden Arena</span>
+          <span class="sp-venue-tag">⚾ UTRGV Baseball Stadium</span>
+          <span class="sp-venue-tag">⚽ UTRGV Field Complex</span>
+          <span class="sp-venue-tag">🎾 Tennis Courts</span>
+          <span class="sp-venue-tag">🏊 Natatorium</span>
+          <span class="sp-venue-tag">🏋️ Student Rec Center</span>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
+</section>
+
+<script>
+let selectedType = '🎟 Going to Game';
+let postCount = 4;
+
+function selectType(el, type) {
+  document.querySelectorAll('.sp-type-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedType = type;
+
+  const label = document.getElementById('selectedTypeLabel');
+
+  if (label) {
+    label.textContent = type;
+  }
+}
+
+function toggleCat(el) {
+
+  el.classList.toggle('active');
+
+  showToast(
+    el.classList.contains('active')
+      ? '✅ Subscribed to ' + el.textContent.trim()
+      : '🔕 Unsubscribed from ' + el.textContent.trim()
+  );
+
+}
+
+function submitPost() {
+
+  const input = document.getElementById('postInput');
+
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const tagMap = {
+    '🎟 Going to Game': {
+      cls: 'looking',
+      label: '🎟 Going to Game'
+    },
+
+    '🤝 Need Teammates': {
+      cls: 'team',
+      label: '🤝 Need Teammates'
+    },
+
+    '📺 Watch Party': {
+      cls: 'watchparty',
+      label: '📺 Watch Party'
+    },
+
+    '📣 Hype': {
+      cls: 'hype',
+      label: '📣 Hype'
+    },
+  };
+
+  const tag = tagMap[selectedType];
+
+  const post = document.createElement('div');
+
+  post.className = 'sp-post';
+
+  post.innerHTML = `
+    <div class="sp-post-header">
+
+      <div class="sp-post-avatar" style="background:#ed7d31;">
+        Y
+      </div>
+
+      <div class="sp-post-meta">
+        <div class="sp-post-name">
+          You
+        </div>
+
+        <div class="sp-post-time">
+          Just now
+        </div>
+      </div>
+
+      <span class="sp-post-tag ${tag.cls}">
+        ${tag.label}
+      </span>
+
+    </div>
+
+    <div class="sp-post-text">
+      ${text}
+    </div>
+
+    <div class="sp-post-actions">
+
+      <button
+        class="sp-action-btn join-btn"
+        onclick="handleJoin(this)"
+        >
+        ✋ Count Me In
+      </button>
+
+      <button
+        class="sp-action-btn"
+        onclick="handleLike(this)"
+      >
+        🔥 0
+      </button>
+
+      <button
+      class="sp-action-btn reply-btn"
+      onclick="toggleReply(this)"
+      >
+        💬 Reply
+      </button>
+
+    </div>
+  `;
+
+  document.getElementById('feedPosts').prepend(post);
+
+  input.value = '';
+
+  postCount++;
+
+  document.getElementById('postCount').textContent =
+    postCount + ' posts';
+
+  showToast('🏟 Post shared with the Vaquero community!');
+
+}
+
+/* =========================
+   JOIN / UNJOIN
+========================= */
+
+function handleJoin(btn) {
+
+  // UNJOIN
+  if (btn.classList.contains('joined')) {
+
+    btn.classList.remove('joined');
+
+    btn.innerHTML = '✋ Count Me In';
+
+    btn.style.background = 'transparent';
+
+    btn.style.borderColor = 'rgba(255,255,255,0.12)';
+
+    btn.style.color = 'rgba(255,255,255,0.45)';
+
+    showToast('❌ You are no longer going.');
+
+  }
+
+  // JOIN
+  else {
+
+    btn.classList.add('joined');
+
+    btn.innerHTML = '❌ Can’t Make It';
+
+    btn.style.background = '#22c55e';
+
+    btn.style.borderColor = '#22c55e';
+
+    btn.style.color = '#fff';
+
+    showToast('🤝 You joined!');
+
+  }
+
+}
+
+/* =========================
+   LIKE BUTTON
+========================= */
+
+function handleLike(btn) {
+
+  if (btn.classList.contains('liked')) return;
+
+  btn.classList.add('liked');
+
+  const num =
+    parseInt(btn.textContent.replace(/\D/g, '')) + 1;
+
+  btn.textContent = '🔥 ' + num;
+
+}
+
+/* =========================
+   REPLY BOX
+========================= */
+
+function toggleReply(btn) {
+
+  const post = btn.closest('.sp-post');
+
+  let replyBox = post.querySelector('.reply-box');
+
+  // CLOSE IF OPEN
+  if (replyBox) {
+
+    replyBox.remove();
+
+    return;
+
+  }
+
+  // CREATE REPLY BOX
+  replyBox = document.createElement('div');
+
+  replyBox.className = 'reply-box';
+
+  replyBox.innerHTML = `
+
+    <!-- REPLIES APPEAR HERE -->
+    <div class="reply-list"></div>
+
+    <!-- INPUT -->
+    <textarea
+      class="reply-input"
+      placeholder="Write your reply..."
+    ></textarea>
+
+    <button class="reply-submit">
+      Reply
+    </button>
+
+  `;
+
+  post.appendChild(replyBox);
+
+  // SUBMIT REPLY
+  const submitBtn =
+    replyBox.querySelector('.reply-submit');
+
+  submitBtn.addEventListener('click', function () {
+
+    const input =
+      replyBox.querySelector('.reply-input');
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const reply = document.createElement('div');
+
+    reply.className = 'posted-reply';
+
+    reply.innerHTML = `
+      <div class="reply-user">
+        You
+      </div>
+
+      <div class="reply-text">
+        ${text}
+      </div>
+    `;
+
+    // ADD REPLY TO TOP
+    replyBox
+      .querySelector('.reply-list')
+      .prepend(reply);
+
+    input.value = '';
+
+  });
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(msg) {
+
+  const t = document.getElementById('spToast');
+
+  t.textContent = msg;
+
+  t.classList.add('show');
+
+  setTimeout(() => {
+
+    t.classList.remove('show');
+
+  }, 3000);
+
+}
+</script>
 
 {% endblock %}

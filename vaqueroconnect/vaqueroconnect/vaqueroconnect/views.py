@@ -91,3 +91,7 @@ def edit_post(request, post_id):
             post.content = content
             post.save()
     return redirect('home')
+
+# Sports page
+def sports(request):
+    return render(request, 'sports.html')
